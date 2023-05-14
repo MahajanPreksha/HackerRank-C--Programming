@@ -1,0 +1,26 @@
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+
+int main() {
+    int q, n, i, j;
+    cin>>q>>n;
+    vector<vector<int>> a(n);
+    for(int k = 0; k < n; k++) {
+        int size;
+        cin>>size;
+        a[k].resize(size);
+        for(int l = 0; l < size; l++) {
+            cin>>a[k][l];
+        }
+    }
+    for(int m = 0; m < q; m++) {
+        cin>>i>>j;
+        cout<<a[i][j]<<endl;
+    }   
+    return 0;
+}
