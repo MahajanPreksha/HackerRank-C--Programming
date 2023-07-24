@@ -1,0 +1,87 @@
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+
+int main() {
+    int N, Q, tempInt, j;
+    cin>>N;
+    cin>>Q;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    string temp;
+    string hrml[N];
+    string queries[Q];
+    size_t indx;
+    for(int i=0; i<N; i++){
+        getline(cin, hrml[i]);
+    }
+    for(int i=0; i<Q; i++){
+        getline(cin, queries[i]);
+    }
+    vector<string> validTag;
+    string currTag, currQuery, validTags, attribute, attributeVal;
+    for(int i=0; i<N; i++){
+        temp = hrml[i];
+        if(temp[0]=='<' && temp[1]=='/'){
+            currTag = temp.substr(2, hrml[0].find(">")-2);
+            indx = validTags.rfind(".");
+            if(indx != string::npos){
+                validTags = validTags.substr(0, indx);
+            }
+            else{
+                validTags = "";
+            }
+        }
+        else{
+            indx = temp.find(" ");
+            if(indx!=string::npos){
+                currTag = temp.substr(1, indx-1);
+            }
+            else{
+                currTag = temp.substr(1, temp.find(">")-1);
+            }
+            if(validTags!= ""){
+                validTags += ".";
+            }
+            validTags +=currTag;
+            validTag.push_back(validTags);
+        }
+    }
+    for(int i=0; i<Q; i++){
+        temp = queries[i];
+        indx = temp.find("~");
+        currQuery = temp.substr(0, indx);
+        attribute = temp.substr(indx+1);
+        if(find(validTag.begin(), validTag.end(), currQuery)==validTag.end()){
+            cout<<"Not Found!"<<endl;
+        }
+        else{
+            tempInt = temp.rfind(".");
+            if(tempInt != string::npos){
+                currTag = temp.substr(tempInt+1, indx-tempInt-1);
+            }
+            else{
+                currTag = temp.substr(0, indx);
+            }
+            for(int j=0; j<N; j++){
+                tempInt = hrml[j].find_first_of(" >");
+                if(hrml[j].substr(1, tempInt-1)==currTag){
+                    tempInt = hrml[j].find(attribute,tempInt);
+                    if(tempInt!=string::npos && hrml[j][tempInt-1]==' ' && hrml[j][tempInt+attribute.length()] == ' '){
+                        attributeVal = hrml[j].substr(tempInt + attribute.length() + 4);
+                        attributeVal = attributeVal.substr(0,attributeVal.find('"'));  
+                        cout<<attributeVal<<endl;
+                        break;
+                    }
+                    else{
+                        cout<<"Not Found!"<<endl;
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
